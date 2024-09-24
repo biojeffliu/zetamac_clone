@@ -120,11 +120,14 @@ class _SettingsScreen extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    // Set initial default values
     lowerBound1Addition.text = "2";
     upperBound1Addition.text = "100";
     lowerBound2Addition.text = "2";
     upperBound2Addition.text = "100";
+    lowerBound1Multiplication.text = "2";
+    upperBound1Multiplication.text = "100";
+    lowerBound2Multiplication.text = "2";
+    upperBound2Multiplication.text = "100";
   }
 
   String? validateNumber(String? value) {
@@ -134,6 +137,20 @@ class _SettingsScreen extends State<SettingsScreen> {
       return 'Number must be between 2 and 100';
     }
     return null;
+  }
+
+  TextFormField getFormField(TextEditingController controller) {
+    return TextFormField(
+            controller: controller,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+            validator: validateNumber,
+          );
   }
 
   @override
@@ -178,63 +195,19 @@ class _SettingsScreen extends State<SettingsScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: TextFormField(
-                          controller: lowerBound1Addition,
-                          decoration: const InputDecoration(
-                            labelText: "Lower Bound 1",
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          validator: validateNumber,
-                        ),
+                        child: getFormField(lowerBound1Addition),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: TextFormField(
-                          controller: upperBound1Addition,
-                          decoration: const InputDecoration(
-                            labelText: "Upper Bound 1",
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          validator: validateNumber,
-                        ),
+                        child: getFormField(upperBound1Addition),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: TextFormField(
-                          controller: lowerBound2Addition,
-                          decoration: const InputDecoration(
-                            labelText: "Lower Bound 2",
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          validator: validateNumber,
-                        ),
+                        child: getFormField(lowerBound2Addition),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: TextFormField(
-                          controller: upperBound2Addition,
-                          decoration: const InputDecoration(
-                            labelText: "Upper Bound 2",
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          validator: validateNumber,
-                        ),
+                        child: getFormField(upperBound2Addition),
                       ),
                     ],
                   ),
@@ -287,63 +260,19 @@ class _SettingsScreen extends State<SettingsScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: TextFormField(
-                          controller: lowerBound1Multiplication,
-                          decoration: const InputDecoration(
-                            labelText: "Lower Bound 1",
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          validator: validateNumber,
-                        ),
+                        child: getFormField(lowerBound1Multiplication),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: TextFormField(
-                          controller: upperBound1Multiplication,
-                          decoration: const InputDecoration(
-                            labelText: "Upper Bound 1",
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          validator: validateNumber,
-                        ),
+                        child: getFormField(upperBound1Multiplication),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: TextFormField(
-                          controller: lowerBound2Multiplication,
-                          decoration: const InputDecoration(
-                            labelText: "Lower Bound 2",
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          validator: validateNumber,
-                        ),
+                        child: getFormField(lowerBound2Multiplication),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: TextFormField(
-                          controller: upperBound2Multiplication,
-                          decoration: const InputDecoration(
-                            labelText: "Upper Bound 2",
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          validator: validateNumber,
-                        ),
+                        child: getFormField(upperBound2Multiplication),
                       ),
                     ],
                   ),
