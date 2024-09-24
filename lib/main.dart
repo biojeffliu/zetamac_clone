@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SetupScreen extends StatefulWidget {
   @override
@@ -106,6 +107,35 @@ class _SettingsScreen extends State<SettingsScreen> {
   bool isCheckedMultiplication = true;
   bool isCheckedDivision = true;
 
+  final TextEditingController lowerBound1Addition = TextEditingController();
+  final TextEditingController upperBound1Addition = TextEditingController();
+  final TextEditingController lowerBound2Addition = TextEditingController();
+  final TextEditingController upperBound2Addition = TextEditingController();
+
+  final TextEditingController lowerBound1Multiplication = TextEditingController();
+  final TextEditingController upperBound1Multiplication = TextEditingController();
+  final TextEditingController lowerBound2Multiplication = TextEditingController();
+  final TextEditingController upperBound2Multiplication = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Set initial default values
+    lowerBound1Addition.text = "2";
+    upperBound1Addition.text = "100";
+    lowerBound2Addition.text = "2";
+    upperBound2Addition.text = "100";
+  }
+
+  String? validateNumber(String? value) {
+    if (value == null || value.isEmpty) return 'Enter a number';
+    final intValue = int.tryParse(value);
+    if (intValue == null || intValue < 2 || intValue > 100) {
+      return 'Number must be between 2 and 100';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,9 +149,231 @@ class _SettingsScreen extends State<SettingsScreen> {
         ),
       ),
       body: Center(
-        child: Text(
-          '$isCheckedAddition Page',
-          style: const TextStyle(fontSize: 24),
+        child: Column(
+          children: [
+            const Text(
+              "Zetamac Arithmetic Game",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: isCheckedAddition,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isCheckedAddition = value ?? false;
+                    });
+                  }
+                ),
+                const Text("Addition"),
+              ],
+            ),
+          if (isCheckedAddition)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Bounds for Addition"),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: lowerBound1Addition,
+                          decoration: const InputDecoration(
+                            labelText: "Lower Bound 1",
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: validateNumber,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextFormField(
+                          controller: upperBound1Addition,
+                          decoration: const InputDecoration(
+                            labelText: "Upper Bound 1",
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: validateNumber,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextFormField(
+                          controller: lowerBound2Addition,
+                          decoration: const InputDecoration(
+                            labelText: "Lower Bound 2",
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: validateNumber,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextFormField(
+                          controller: upperBound2Addition,
+                          decoration: const InputDecoration(
+                            labelText: "Upper Bound 2",
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: validateNumber,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: isCheckedSubtraction,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isCheckedSubtraction = value ?? false;
+                    });
+                  }
+                ),
+                const Text("Subtraction"),
+              ],
+            ),
+            if (isCheckedSubtraction)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Addition problems in reverse.")
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: isCheckedMultiplication,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isCheckedMultiplication = value ?? false;
+                    });
+                  }
+                ),
+                const Text("Multiplication"),
+              ],
+            ),
+            if (isCheckedMultiplication)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Bounds for Multiplication"),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: lowerBound1Multiplication,
+                          decoration: const InputDecoration(
+                            labelText: "Lower Bound 1",
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: validateNumber,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextFormField(
+                          controller: upperBound1Multiplication,
+                          decoration: const InputDecoration(
+                            labelText: "Upper Bound 1",
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: validateNumber,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextFormField(
+                          controller: lowerBound2Multiplication,
+                          decoration: const InputDecoration(
+                            labelText: "Lower Bound 2",
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: validateNumber,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: TextFormField(
+                          controller: upperBound2Multiplication,
+                          decoration: const InputDecoration(
+                            labelText: "Upper Bound 2",
+                            border: OutlineInputBorder(),
+                          ),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          validator: validateNumber,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: isCheckedDivision,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isCheckedDivision = value ?? false;
+                    });
+                  }
+                ),
+                const Text("Division"),
+              ],
+            ),
+            if (isCheckedDivision)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Division problems in reverse.")
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
