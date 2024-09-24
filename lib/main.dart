@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:math';
 
 class SetupScreen extends StatefulWidget {
   @override
@@ -8,6 +9,19 @@ class SetupScreen extends StatefulWidget {
 
 class _SetupScreenState extends State<SetupScreen> {
   int _selectedDuration = 60;
+  bool isCheckedAddition = true;
+  bool isCheckedSubtraction = true;
+  bool isCheckedMultiplication = true;
+  bool isCheckedDivision = true;
+
+  String lowerBound1Addition = "2";
+  String upperBound1Addition = "100";
+  String lowerBound2Addition = "2";
+  String upperBound2Addition = "100";
+  String lowerBound1Multiplication = "2";
+  String upperBound1Multiplication = "100";
+  String lowerBound2Multiplication = "2";
+  String upperBound2Multiplication = "100";
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +31,27 @@ class _SetupScreenState extends State<SetupScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              final result = await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsScreen()),
+                MaterialPageRoute(builder: (context) => SettingsScreen())
               );
+              if (result != null) {
+                setState(() {
+                  isCheckedAddition = result['isCheckedAddition'];
+                  isCheckedSubtraction = result['isCheckedSubtraction'];
+                  isCheckedMultiplication = result['isCheckedMultiplication'];
+                  isCheckedDivision = result['isCheckedDivision'];
+                  lowerBound1Addition = result['lowerBound1Addition'];
+                  upperBound1Addition = result['upperBound1Addition'];
+                  lowerBound2Addition = result['lowerBound2Addition'];
+                  upperBound2Addition = result['upperBound2Addition'];
+                  lowerBound1Multiplication = result['lowerBound1Multiplication'];
+                  upperBound1Multiplication = result['upperBound1Multiplication'];
+                  lowerBound2Multiplication = result['lowerBound2Multiplication'];
+                  upperBound2Multiplication = result['upperBound2Multiplication'];
+                });
+              }
             },
           ),
         ],
@@ -58,13 +88,25 @@ class _SetupScreenState extends State<SetupScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TypingTestScreen(
+                      builder: (context) => ArithmeticTestScreen(
                         duration: _selectedDuration,
+                        isCheckedAddition: isCheckedAddition,
+                        isCheckedSubtraction: isCheckedSubtraction,
+                        isCheckedMultiplication: isCheckedMultiplication,
+                        isCheckedDivision: isCheckedDivision,
+                        lowerBound1Addition: lowerBound1Addition,
+                        upperBound1Addition: upperBound1Addition,
+                        lowerBound2Addition: lowerBound2Addition,
+                        upperBound2Addition: upperBound2Addition,
+                        lowerBound1Multiplication: lowerBound1Multiplication,
+                        upperBound1Multiplication: upperBound1Multiplication,
+                        lowerBound2Multiplication: lowerBound2Multiplication,
+                        upperBound2Multiplication: upperBound2Multiplication,
                       ),
                     ),
                   );
                 },
-                child: const Text('Start Typing Test'),
+                child: const Text('Start Zetamac Test'),
               ),
             ),
           ],
@@ -74,10 +116,36 @@ class _SetupScreenState extends State<SetupScreen> {
   }
 }
 
-class TypingTestScreen extends StatelessWidget {
+class ArithmeticTestScreen extends StatelessWidget {
   final int duration;
+  final bool isCheckedAddition;
+  final bool isCheckedSubtraction;
+  final bool isCheckedMultiplication;
+  final bool isCheckedDivision;
+  final String lowerBound1Addition;
+  final String upperBound1Addition;
+  final String lowerBound2Addition;
+  final String upperBound2Addition;
+  final String lowerBound1Multiplication;
+  final String upperBound1Multiplication;
+  final String lowerBound2Multiplication;
+  final String upperBound2Multiplication;
 
-  TypingTestScreen({required this.duration});
+  const ArithmeticTestScreen({super.key, 
+    required this.duration,
+    required this.isCheckedAddition,
+    required this.isCheckedSubtraction,
+    required this.isCheckedMultiplication,
+    required this.isCheckedDivision,
+    required this.lowerBound1Addition,
+    required this.upperBound1Addition,
+    required this.lowerBound2Addition,
+    required this.upperBound2Addition,
+    required this.lowerBound1Multiplication,
+    required this.upperBound1Multiplication,
+    required this.lowerBound2Multiplication,
+    required this.upperBound2Multiplication,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +162,7 @@ class TypingTestScreen extends StatelessWidget {
     );
   }
 }
+
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -161,17 +230,28 @@ class _SettingsScreen extends State<SettingsScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); 
+            Map<String, dynamic> settingsData = {
+              'isCheckedAddition': isCheckedAddition,
+              'isCheckedSubtraction': isCheckedSubtraction,
+              'isCheckedMultiplication': isCheckedMultiplication,
+              'isCheckedDivision': isCheckedDivision,
+              'lowerBound1Addition': lowerBound1Addition.text,
+              'upperBound1Addition': upperBound1Addition.text,
+              'lowerBound2Addition': lowerBound2Addition.text,
+              'upperBound2Addition': upperBound2Addition.text,
+              'lowerBound1Multiplication': lowerBound1Multiplication.text,
+              'upperBound1Multiplication': upperBound1Multiplication.text,
+              'lowerBound2Multiplication': lowerBound2Multiplication.text,
+              'upperBound2Multiplication': upperBound2Multiplication.text,
+            };
+
+            Navigator.pop(context, settingsData); 
           },
         ),
       ),
       body: Center(
         child: Column(
           children: [
-            const Text(
-              "Zetamac Arithmetic Game",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
             Row(
               children: [
                 Checkbox(
@@ -315,7 +395,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: SetupScreen(), // Default screen to show on app startup
+      home: SetupScreen(),
     );
   }
 }
