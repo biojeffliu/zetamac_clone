@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
+import 'dart:async';
+
 
 class SetupScreen extends StatefulWidget {
   @override
@@ -146,6 +148,73 @@ class ArithmeticTestScreen extends StatelessWidget {
     required this.lowerBound2Multiplication,
     required this.upperBound2Multiplication,
   });
+
+  Map<String, int> generateArithmetic({
+    required bool isCheckedAddition,
+    required bool isCheckedSubtraction,
+    required bool isCheckedMultiplication,
+    required bool isCheckedDivision,
+    required int lowerBound1Addition,
+    required int upperBound1Addition,
+    required int lowerBound2Addition,
+    required int upperBound2Addition,
+    required int lowerBound1Multiplication,
+    required int upperBound1Multiplication,
+    required int lowerBound2Multiplication,
+    required int upperBound2Multiplication,
+    required int numProblems,
+  }) {
+    Map<String, int> problemsToSolutions = Map<String, int>();
+    Random random = Random();
+
+    while (problemsToSolutions.length < numProblems) {
+      String operation = _getRandomOperation(
+        isCheckedAddition,
+        isCheckedSubtraction,
+        isCheckedMultiplication,
+        isCheckedDivision,
+      );
+      int num1 = 0;
+      int num2 = 0;
+      int solution = 0;
+      if (operation == '+') {
+        num1 = _randomBetween(random, lowerBound1Addition, upperBound1Addition);
+        num2 = _randomBetween(random, lowerBound2Addition, upperBound2Addition);
+        solution = num1 + num2;
+      } else if (operation == '-') {
+        num1 = _randomBetween(random, lowerBound1Addition, upperBound1Addition);
+        num2 = _randomBetween(random, lowerBound2Addition, upperBound2Addition);
+        solution = num1 - num2;        
+      } else if (operation == '*') {
+        num1 = _randomBetween(random, lowerBound1Multiplication, upperBound1Multiplication);
+        num2 = _randomBetween(random, lowerBound2Multiplication, upperBound2Multiplication);       
+        solution = num1 * num2; 
+      } else if (operation == '/') {
+        num1 = _randomBetween(random, lowerBound1Multiplication, upperBound1Multiplication);
+        num2 = _randomBetween(random, lowerBound2Multiplication, upperBound2Multiplication);
+        // Skip division by 0 problems
+        if (num2 == 0) {
+          continue;
+        }
+        solution = (num1 / num2).floor();
+      }
+      problemsToSolutions['$num1 $operation $num2 = ?'] = solution;
+    }
+    return problemsToSolutions;
+  }
+
+  int _randomBetween(Random random, int lower, int upper) {
+    return lower + random.nextInt(upper - lower + 1);
+  }
+
+  String _getRandomOperation(bool addition, bool subtraction, bool multiplication, bool division) {
+    List<String> operations = [];
+    if (addition) operations.add('+');
+    if (subtraction) operations.add('-');
+    if (multiplication) operations.add('*');
+    if (division) operations.add('/');
+    return operations[Random().nextInt(operations.length)];
+  }
 
   @override
   Widget build(BuildContext context) {
