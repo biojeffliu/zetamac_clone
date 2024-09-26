@@ -161,6 +161,8 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
   String? currentProblem;
   int? currentSolution;
   int problemsSolved = 0;
+  int timeRemaining = 0;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -179,6 +181,42 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
       lowerBound2Multiplication: int.parse(widget.lowerBound2Multiplication),
       upperBound2Multiplication: int.parse(widget.upperBound2Multiplication),
       numProblems: 1000,
+    );
+    timeRemaining = widget.duration;
+    startTimer();
+  }
+
+  void startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (timeRemaining > 0) {
+          timeRemaining--;
+        } else {
+          timer.cancel();
+          _endTest();
+        }
+      });
+    });
+  }
+
+  void _endTest() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Time's Up!"),
+          content: Text("Your score is $problemsSolved"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: const Text("Affirmative"),
+            ),
+          ],
+        );
+      }
     );
   }
 
@@ -228,7 +266,7 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
           continue; // Skip division by zero
         }
         int product = num1 * num2;
-        solution = (product / num1).toInt();
+        solution = product ~/ num1;
         problemsToSolutions['$product $operation $num1 = ?'] = solution;
         continue;
       }
@@ -276,6 +314,10 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
         Text(
           "Score: $problemsSolved",
           style: TextStyle(fontSize: 24),
+        ),
+        Text(
+          "Time Left: $timeRemaining seconds",
+          style: TextStyle(fontSize: 24, color: Colors.black),
         ),
         Text(
           _getCurrentProblem(problemsToSolutions, problemsSolved),
@@ -356,6 +398,7 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Arithmetic Test"),
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: screenKeyPad(),
