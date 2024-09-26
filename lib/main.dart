@@ -157,7 +157,7 @@ class ArithmeticTestScreen extends StatefulWidget {
 
 class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
   LinkedHashMap<String, int> problemsToSolutions = LinkedHashMap<String, int>();
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   String? currentProblem;
   int? currentSolution;
   int problemsSolved = 0;
@@ -197,7 +197,6 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
     required int upperBound2Multiplication,
     required int numProblems,
   }) {
-    // LinkedHashMap<String, int> problemsToSolutions = LinkedHashMap<String, int>();
     Random random = Random();
 
     while (problemsToSolutions.length < numProblems) {
@@ -223,12 +222,15 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
         num2 = _randomBetween(random, lowerBound2Multiplication, upperBound2Multiplication);
         solution = num1 * num2;
       } else if (operation == '/') {
-        num2 = _randomBetween(random, lowerBound1Multiplication, upperBound1Multiplication);
-        num1 = _randomBetween(random, lowerBound2Multiplication, upperBound2Multiplication);
+        num1 = _randomBetween(random, lowerBound1Multiplication, upperBound1Multiplication);
+        num2 = _randomBetween(random, lowerBound2Multiplication, upperBound2Multiplication);
         if (num2 == 0) {
           continue; // Skip division by zero
         }
-        solution = (num2 / num1).floor();
+        int product = num1 * num2;
+        solution = ((num2 * num1) / num1).floor();
+        problemsToSolutions['$product $operation $num1 = ?'] = solution;
+        continue;
       }
       problemsToSolutions['$num1 $operation $num2 = ?'] = solution;
     }
