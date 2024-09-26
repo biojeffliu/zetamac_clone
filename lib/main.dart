@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math';
@@ -10,7 +12,7 @@ class SetupScreen extends StatefulWidget {
 }
 
 class _SetupScreenState extends State<SetupScreen> {
-  int _selectedDuration = 60;
+  int _selectedDuration = 120;
   bool isCheckedAddition = true;
   bool isCheckedSubtraction = true;
   bool isCheckedMultiplication = true;
@@ -21,7 +23,7 @@ class _SetupScreenState extends State<SetupScreen> {
   String lowerBound2Addition = "2";
   String upperBound2Addition = "100";
   String lowerBound1Multiplication = "2";
-  String upperBound1Multiplication = "100";
+  String upperBound1Multiplication = "12";
   String lowerBound2Multiplication = "2";
   String upperBound2Multiplication = "100";
 
@@ -118,7 +120,7 @@ class _SetupScreenState extends State<SetupScreen> {
   }
 }
 
-class ArithmeticTestScreen extends StatelessWidget {
+class ArithmeticTestScreen extends StatefulWidget {
   final int duration;
   final bool isCheckedAddition;
   final bool isCheckedSubtraction;
@@ -133,7 +135,7 @@ class ArithmeticTestScreen extends StatelessWidget {
   final String lowerBound2Multiplication;
   final String upperBound2Multiplication;
 
-  const ArithmeticTestScreen({super.key, 
+  const ArithmeticTestScreen({super.key,
     required this.duration,
     required this.isCheckedAddition,
     required this.isCheckedSubtraction,
@@ -149,7 +151,38 @@ class ArithmeticTestScreen extends StatelessWidget {
     required this.upperBound2Multiplication,
   });
 
-  Map<String, int> generateArithmetic({
+  @override
+  _ArithmeticTestScreenState createState() => _ArithmeticTestScreenState();
+}
+
+class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
+  LinkedHashMap<String, int> problemsToSolutions = LinkedHashMap<String, int>();
+  TextEditingController _controller = TextEditingController();
+  String? currentProblem;
+  int? currentSolution;
+  int problemsSolved = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    problemsToSolutions = generateArithmetic(
+      isCheckedAddition: widget.isCheckedAddition,
+      isCheckedSubtraction: widget.isCheckedSubtraction,
+      isCheckedMultiplication: widget.isCheckedMultiplication,
+      isCheckedDivision: widget.isCheckedDivision,
+      lowerBound1Addition: int.parse(widget.lowerBound1Addition),
+      upperBound1Addition: int.parse(widget.upperBound1Addition),
+      lowerBound2Addition: int.parse(widget.lowerBound2Addition),
+      upperBound2Addition: int.parse(widget.upperBound2Addition),
+      lowerBound1Multiplication: int.parse(widget.lowerBound1Multiplication),
+      upperBound1Multiplication: int.parse(widget.upperBound1Multiplication),
+      lowerBound2Multiplication: int.parse(widget.lowerBound2Multiplication),
+      upperBound2Multiplication: int.parse(widget.upperBound2Multiplication),
+      numProblems: 1000,
+    );
+  }
+
+  LinkedHashMap<String, int> generateArithmetic({
     required bool isCheckedAddition,
     required bool isCheckedSubtraction,
     required bool isCheckedMultiplication,
@@ -164,7 +197,7 @@ class ArithmeticTestScreen extends StatelessWidget {
     required int upperBound2Multiplication,
     required int numProblems,
   }) {
-    Map<String, int> problemsToSolutions = Map<String, int>();
+    // LinkedHashMap<String, int> problemsToSolutions = LinkedHashMap<String, int>();
     Random random = Random();
 
     while (problemsToSolutions.length < numProblems) {
@@ -184,19 +217,18 @@ class ArithmeticTestScreen extends StatelessWidget {
       } else if (operation == '-') {
         num1 = _randomBetween(random, lowerBound1Addition, upperBound1Addition);
         num2 = _randomBetween(random, lowerBound2Addition, upperBound2Addition);
-        solution = num1 - num2;        
+        solution = num1 - num2;
       } else if (operation == '*') {
         num1 = _randomBetween(random, lowerBound1Multiplication, upperBound1Multiplication);
-        num2 = _randomBetween(random, lowerBound2Multiplication, upperBound2Multiplication);       
-        solution = num1 * num2; 
-      } else if (operation == '/') {
-        num1 = _randomBetween(random, lowerBound1Multiplication, upperBound1Multiplication);
         num2 = _randomBetween(random, lowerBound2Multiplication, upperBound2Multiplication);
-        // Skip division by 0 problems
+        solution = num1 * num2;
+      } else if (operation == '/') {
+        num2 = _randomBetween(random, lowerBound1Multiplication, upperBound1Multiplication);
+        num1 = _randomBetween(random, lowerBound2Multiplication, upperBound2Multiplication);
         if (num2 == 0) {
-          continue;
+          continue; // Skip division by zero
         }
-        solution = (num1 / num2).floor();
+        solution = (num2 / num1).floor();
       }
       problemsToSolutions['$num1 $operation $num2 = ?'] = solution;
     }
@@ -216,17 +248,115 @@ class ArithmeticTestScreen extends StatelessWidget {
     return operations[Random().nextInt(operations.length)];
   }
 
+  String _getCurrentProblem(LinkedHashMap<String, int> problemsToSolutions, int problemsSolved) {
+    List<String> keys = problemsToSolutions.keys.toList();
+    if (problemsSolved < keys.length) {
+      return keys[problemsSolved];
+    } else {
+      return "Bro you solved all the problems generated that's crazy.";
+    }
+  }
+
+  int _getCurrentSolution(LinkedHashMap<String, int> problemsToSolutions, int problemsSolved) {
+    List<int> values = problemsToSolutions.values.toList();
+    if (problemsSolved < values.length) {
+      return values[problemsSolved];
+    } else {
+      return -1;
+    }
+  }
+
+  Widget screenKeyPad() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Score: $problemsSolved",
+          style: TextStyle(fontSize: 24),
+        ),
+        Text(
+          _getCurrentProblem(problemsToSolutions, problemsSolved),
+          style: TextStyle(fontSize: 24),
+        ),
+        Padding(
+          padding: EdgeInsets.all(16.0),
+          child: TextField(
+            controller: _controller,
+            readOnly: true,
+            style: TextStyle(fontSize: 24),
+            keyboardType: TextInputType.none,
+          ),
+        ),
+        Expanded(
+          child: SizedBox(
+            height: 300,
+            child: GridView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 2, 
+              ),
+              itemCount: 12,
+              itemBuilder: (context, index) {
+                  if (index == 9) return Container();
+                  if (index == 11) {
+                    return _keypadButton('DEL', Colors.red); 
+                  }
+                  String value = index == 10 ? '0' : (index + 1).toString();
+                  return _keypadButton(value, Colors.blue);
+                },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _onKeyTap(String value) {
+    setState(() {
+      if (value == 'DEL') {
+        if (_controller.text.isNotEmpty) {
+          _controller.text = _controller.text.substring(0, _controller.text.length - 1);
+        }
+      } else {
+        _controller.text += value;
+        int enteredSolution = int.tryParse(_controller.text) ?? -1;
+        int solution = _getCurrentSolution(problemsToSolutions, problemsSolved);
+        if (enteredSolution == solution) {
+          problemsSolved += 1;
+          _controller.clear();
+        }
+      }
+    });
+  }
+  
+  Widget _keypadButton(String value, Color color) {
+    return GestureDetector(
+      onTap: () => _onKeyTap(value),
+      child: Container(
+        margin: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          value,
+          style: const TextStyle(fontSize: 24, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Typing Test"),
+        title: const Text("Arithmetic Test"),
       ),
       body: Center(
-        child: Text(
-          'Typing test for $duration seconds.',
-          style: const TextStyle(fontSize: 24),
-        ),
+        child: screenKeyPad(),
       ),
     );
   }
@@ -263,7 +393,7 @@ class _SettingsScreen extends State<SettingsScreen> {
     lowerBound2Addition.text = "2";
     upperBound2Addition.text = "100";
     lowerBound1Multiplication.text = "2";
-    upperBound1Multiplication.text = "100";
+    upperBound1Multiplication.text = "12";
     lowerBound2Multiplication.text = "2";
     upperBound2Multiplication.text = "100";
   }
