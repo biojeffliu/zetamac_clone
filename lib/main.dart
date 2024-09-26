@@ -7,6 +7,8 @@ import 'dart:async';
 
 
 class SetupScreen extends StatefulWidget {
+  const SetupScreen({super.key});
+
   @override
   _SetupScreenState createState() => _SetupScreenState();
 }
@@ -38,7 +40,7 @@ class _SetupScreenState extends State<SetupScreen> {
             onPressed: () async {
               final result = await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsScreen())
+                MaterialPageRoute(builder: (context) => const SettingsScreen())
               );
               if (result != null) {
                 setState(() {
@@ -110,7 +112,7 @@ class _SetupScreenState extends State<SetupScreen> {
                     ),
                   );
                 },
-                child: const Text('Start Zetamac Test'),
+                child: const Text('Start'),
               ),
             ),
           ],
@@ -251,14 +253,19 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
         num1 = _randomBetween(random, lowerBound1Addition, upperBound1Addition);
         num2 = _randomBetween(random, lowerBound2Addition, upperBound2Addition);
         solution = num1 + num2;
+        problemsToSolutions['$num1 $operation $num2 = ?'] = solution;
       } else if (operation == '-') {
         num1 = _randomBetween(random, lowerBound1Addition, upperBound1Addition);
         num2 = _randomBetween(random, lowerBound2Addition, upperBound2Addition);
-        solution = num1 - num2;
+        int minuend = max(num1, num2);
+        int subtrahend = min(num1, num2);
+        int solution = minuend - subtrahend;
+        problemsToSolutions['$minuend $operation $subtrahend = ?'] = solution;
       } else if (operation == '*') {
         num1 = _randomBetween(random, lowerBound1Multiplication, upperBound1Multiplication);
         num2 = _randomBetween(random, lowerBound2Multiplication, upperBound2Multiplication);
         solution = num1 * num2;
+        problemsToSolutions['$num1 $operation $num2 = ?'] = solution;
       } else if (operation == '/') {
         num1 = _randomBetween(random, lowerBound1Multiplication, upperBound1Multiplication);
         num2 = _randomBetween(random, lowerBound2Multiplication, upperBound2Multiplication);
@@ -268,9 +275,7 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
         int product = num1 * num2;
         solution = product ~/ num1;
         problemsToSolutions['$product $operation $num1 = ?'] = solution;
-        continue;
       }
-      problemsToSolutions['$num1 $operation $num2 = ?'] = solution;
     }
     return problemsToSolutions;
   }
@@ -313,22 +318,22 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
       children: [
         Text(
           "Score: $problemsSolved",
-          style: TextStyle(fontSize: 24),
+          style: const TextStyle(fontSize: 24),
         ),
         Text(
           "Time Left: $timeRemaining seconds",
-          style: TextStyle(fontSize: 24, color: Colors.black),
+          style: const TextStyle(fontSize: 24, color: Colors.black),
         ),
         Text(
           _getCurrentProblem(problemsToSolutions, problemsSolved),
-          style: TextStyle(fontSize: 24),
+          style: const TextStyle(fontSize: 24),
         ),
         Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: TextField(
             controller: _controller,
             readOnly: true,
-            style: TextStyle(fontSize: 24),
+            style: const TextStyle(fontSize: 24),
             keyboardType: TextInputType.none,
           ),
         ),
@@ -336,8 +341,8 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
           child: SizedBox(
             height: 300,
             child: GridView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 childAspectRatio: 2, 
               ),
