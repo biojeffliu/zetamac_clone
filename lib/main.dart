@@ -228,7 +228,7 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
           continue; // Skip division by zero
         }
         int product = num1 * num2;
-        solution = ((num2 * num1) / num1).floor();
+        solution = (product / num1).toInt();
         problemsToSolutions['$product $operation $num1 = ?'] = solution;
         continue;
       }
