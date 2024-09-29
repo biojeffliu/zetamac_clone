@@ -257,10 +257,9 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
       } else if (operation == '-') {
         num1 = _randomBetween(random, lowerBound1Addition, upperBound1Addition);
         num2 = _randomBetween(random, lowerBound2Addition, upperBound2Addition);
-        int minuend = max(num1, num2);
-        int subtrahend = min(num1, num2);
-        int solution = minuend - subtrahend;
-        problemsToSolutions['$minuend $operation $subtrahend = ?'] = solution;
+        int ssum = num1 + num2;
+        int solution = num1;
+        problemsToSolutions['$ssum $operation $num2 = ?'] = solution;
       } else if (operation == '*') {
         num1 = _randomBetween(random, lowerBound1Multiplication, upperBound1Multiplication);
         num2 = _randomBetween(random, lowerBound2Multiplication, upperBound2Multiplication);
@@ -269,7 +268,7 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
       } else if (operation == '/') {
         num1 = _randomBetween(random, lowerBound1Multiplication, upperBound1Multiplication);
         num2 = _randomBetween(random, lowerBound2Multiplication, upperBound2Multiplication);
-        if (num2 == 0) {
+        if (num1 == 0) {
           continue; // Skip division by zero
         }
         int product = num1 * num2;
@@ -363,6 +362,7 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
   }
 
   void _onKeyTap(String value) {
+    HapticFeedback.lightImpact;
     setState(() {
       if (value == 'DEL') {
         if (_controller.text.isNotEmpty) {
