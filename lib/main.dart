@@ -33,7 +33,7 @@ class _SetupScreenState extends State<SetupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Zetamac Typing Test Setup')),
+        title: const Center(child: Text('Zetamac Test')),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -204,6 +204,7 @@ class _ArithmeticTestScreenState extends State<ArithmeticTestScreen> {
   void _endTest() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Time's Up!"),
